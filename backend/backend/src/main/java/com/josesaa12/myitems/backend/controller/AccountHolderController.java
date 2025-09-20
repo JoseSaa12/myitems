@@ -1,7 +1,10 @@
 package com.josesaa12.myitems.backend.controller;
 
-import com.josesaa12.myitems.backend.model.AccountHolder;
+import com.josesaa12.myitems.backend.dto.AccountHolderRequest;
+import com.josesaa12.myitems.backend.dto.AccountHolderResponse;
+import com.josesaa12.myitems.backend.dto.PagedResponse;
 import com.josesaa12.myitems.backend.service.AccountHolderService;
+import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -17,43 +20,57 @@ public class AccountHolderController {
         this.service = service;
     }
 
-    // Listado simple (opcional, útil para probar rápido)
+    // ✅ Listar todos (sin paginación)
     @GetMapping
-    public List<AccountHolder> list() {
+    public List<AccountHolderResponse> list() {
         return service.findAll();
     }
 
+    // ✅ Listar con paginación
+    @GetMapping("/paged")
+    public PagedResponse<AccountHolderResponse> listPaged(
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "5") int size
+    ) {
+        return service.findAllPaged(page, size);
+    }
+
+
+
+    // ✅ Buscar por ID
     @GetMapping("/{id}")
-    public ResponseEntity<?> getById(@PathVariable Long id) {
+    public ResponseEntity<AccountHolderResponse> getById(@PathVariable Long id) {
         return service.findById(id)
                 .map(ResponseEntity::ok)
                 .orElseGet(() -> ResponseEntity.notFound().build());
     }
 
+
+    // ✅ Crear
     @PostMapping
-    public AccountHolder create(@RequestBody AccountHolder accountHolder) {
-        return service.save(accountHolder);
+    public AccountHolderResponse create(@Valid @RequestBody AccountHolderRequest request) {
+        return service.save(request);
     }
 
+    // ✅ Actualizar
     @PutMapping("/{id}")
-    public ResponseEntity<?> update(@PathVariable Long id, @RequestBody AccountHolder accountHolder) {
-        return service.findById(id)
-                .map(existing -> {
-                    accountHolder.setId(id);
-                    return ResponseEntity.ok(service.save(accountHolder));
-                })
+    public ResponseEntity<AccountHolderResponse> update(
+            @PathVariable Long id,
+            @RequestBody AccountHolderRequest request
+    ) {
+        return service.update(id, request)
+                .map(ResponseEntity::ok)
                 .orElseGet(() -> ResponseEntity.notFound().build());
     }
 
-
+    // ✅ Borrar
     @DeleteMapping("/{id}")
-    public ResponseEntity<Object> delete(@PathVariable Long id) {
+    public ResponseEntity<Void> delete(@PathVariable Long id) {
         return service.findById(id)
                 .map(existing -> {
                     service.deleteById(id);
-                    return ResponseEntity.noContent().build();
+                    return ResponseEntity.noContent().<Void>build();
                 })
                 .orElseGet(() -> ResponseEntity.notFound().build());
     }
 }
-
