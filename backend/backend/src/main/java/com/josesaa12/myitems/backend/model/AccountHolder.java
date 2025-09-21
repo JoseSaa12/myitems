@@ -9,7 +9,8 @@ import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 import java.time.Instant;
 
 @Entity
-@EntityListeners(AuditingEntityListener.class)
+@Table(name = "account_holder")
+
 public class AccountHolder {
 
     @Id
@@ -23,13 +24,15 @@ public class AccountHolder {
     private String description;   // opcional
 
     // CSV "mma,gym,cliente"
+    @Column(name = "tags_csv")
     private String tagsCsv;
 
     @CreatedDate
-    @Column(updatable = false)
+    @Column(name = "created_at", updatable = false)
     private Instant createdAt;
 
     @LastModifiedDate
+    @Column(name = "updated_at")
     private Instant updatedAt;
 
     // Getters y Setters

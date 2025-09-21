@@ -4,6 +4,7 @@ import java.time.Instant;
 import java.util.List;
 
 public class AccountHolderResponse {
+
     private Long id;
     private String name;
     private String description;
@@ -11,7 +12,7 @@ public class AccountHolderResponse {
     private Instant createdAt;
     private Instant updatedAt;
 
-    // Getters y Setters
+    // Getters & setters
     public Long getId() { return id; }
     public void setId(Long id) { this.id = id; }
 

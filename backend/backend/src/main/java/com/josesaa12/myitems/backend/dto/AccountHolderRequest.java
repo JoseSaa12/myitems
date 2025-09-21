@@ -6,15 +6,17 @@ import java.util.List;
 
 public class AccountHolderRequest {
 
-    @NotBlank(message = "El nombre no puede estar vacío")
-    @Size(min = 2, max = 50, message = "El nombre debe tener entre 2 y 50 caracteres")
+    @NotBlank
+    @Size(min = 2, max = 100)
     private String name;
 
+    @Size(max = 1000)
     private String description;
 
-    private List<String> tags; // opcional
+    // Lista de tags que enviaremos/recibiremos como array de strings
+    private List<String> tags;
 
-    // Getters y Setters
+    // Getters & setters
     public String getName() { return name; }
     public void setName(String name) { this.name = name; }
 
