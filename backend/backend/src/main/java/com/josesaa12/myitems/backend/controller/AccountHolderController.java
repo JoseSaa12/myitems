@@ -56,7 +56,7 @@ public class AccountHolderController {
     @PutMapping("/{id}")
     public ResponseEntity<AccountHolderResponse> update(
             @PathVariable Long id,
-            @RequestBody AccountHolderRequest request
+            @Valid @RequestBody AccountHolderRequest request
     ) {
         return service.update(id, request)
                 .map(ResponseEntity::ok)
