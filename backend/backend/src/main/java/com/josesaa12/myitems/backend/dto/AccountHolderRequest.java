@@ -16,6 +16,17 @@ public class AccountHolderRequest {
     // Lista de tags que enviaremos/recibiremos como array de strings
     private List<String> tags;
 
+    // ✅ Constructor vacío (necesario para Spring)
+    public AccountHolderRequest() {
+    }
+
+    // ✅ Constructor con parámetros (necesario para DataSeeder)
+    public AccountHolderRequest(String name, String description, List<String> tags) {
+        this.name = name;
+        this.description = description;
+        this.tags = tags;
+    }
+
     // Getters & setters
     public String getName() { return name; }
     public void setName(String name) { this.name = name; }
