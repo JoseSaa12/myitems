@@ -32,12 +32,12 @@ public class AccountHolderController {
     @GetMapping("/paged")
     public PagedResponse<AccountHolderResponse> listPaged(
             @RequestParam(defaultValue = "0") int page,
-            @RequestParam(defaultValue = "5") int size
+            @RequestParam(defaultValue = "5") int size,
+            @RequestParam(defaultValue = "id") String sortBy,
+            @RequestParam(defaultValue = "ASC") String direction
     ) {
-        return service.findAllPaged(page, size);
+        return service.findAllPaged(page, size, sortBy, direction);
     }
-
-
 
     // ✅ Buscar por ID
     @GetMapping("/{id}")
@@ -46,7 +46,6 @@ public class AccountHolderController {
                 .map(ResponseEntity::ok)
                 .orElseGet(() -> ResponseEntity.notFound().build());
     }
-
 
     // ✅ Crear
     @PostMapping

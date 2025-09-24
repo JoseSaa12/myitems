@@ -79,4 +79,20 @@ public class AccountHolderService {
 
         return new PagedResponse<>(data, result.getNumber(), result.getSize(), result.getTotalElements());
     }
+    // 🔹 Listar con paginación + orden dinámico (nuevo, no rompe nada)
+    public PagedResponse<AccountHolderResponse> findAllPaged(int page, int size, String sortBy, String direction) {
+        org.springframework.data.domain.Sort sort = direction.equalsIgnoreCase("DESC")
+                ? org.springframework.data.domain.Sort.by(sortBy).descending()
+                : org.springframework.data.domain.Sort.by(sortBy).ascending();
+
+        PageRequest pageable = PageRequest.of(page, size, sort);
+        Page<AccountHolder> result = repository.findAll(pageable);
+
+        List<AccountHolderResponse> data = result.getContent()
+                .stream()
+                .map(AccountHolderMapper::toResponse)
+                .toList();
+
+        return new PagedResponse<>(data, result.getNumber(), result.getSize(), result.getTotalElements());
+    }
 }
