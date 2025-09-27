@@ -1,84 +1,84 @@
-import { useState, useEffect } from "react";
+// frontend/src/components/GymDashboard.jsx
+import { useState } from "react";
 import { Plus, BarChart3 } from "lucide-react";
-import { getPaged } from "../api/accountHolders/accountHolders";
 import MemberList from "./MemberList";
 import MemberModal from "./MemberModal";
 import StatsPanel from "./StatsPanel";
+import { useGymMembers } from "../hooks/useGymMembers";
 
 function GymDashboard() {
-  const [members, setMembers] = useState([]);
-  const [loading, setLoading] = useState(true);
+  const {
+    members,
+    loading,
+    stats,
+    addMember,
+    updateMember,
+    deleteMember,
+    toggleMemberStatus,
+  } = useGymMembers();
+
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [editingMember, setEditingMember] = useState(null);
-  const [showStats, setShowStats] = useState(false);
+  const [showStats, setShowStats] = useState(true);
 
-  // 🔥 Cargar desde backend
-  useEffect(() => {
-    getPaged(0, 10, "id", "ASC").then((res) => {
-      setMembers(res.data);
-      setLoading(false);
-    });
-  }, []);
+  const handleAddMember = () => {
+    setEditingMember(null);
+    setIsModalOpen(true);
+  };
+
+  const handleSaveMember = async (data) => {
+    if (editingMember) {
+      await updateMember(editingMember.id, data);
+    } else {
+      await addMember(data);
+    }
+    setIsModalOpen(false);
+  };
 
   const handleEditMember = (member) => {
     setEditingMember(member);
     setIsModalOpen(true);
   };
 
-  const handleCloseModal = () => {
-    setIsModalOpen(false);
-    setEditingMember(null);
-  };
-
-  const handleSaveMember = (memberData) => {
-    console.log("Guardar miembro:", memberData);
-  };
-
-  const handleDeleteMember = (id) => {
-    console.log("Eliminar miembro:", id);
-  };
-
-  const handleToggleStatus = (id) => {
-    console.log("Cambiar estado del miembro:", id);
-  };
-
-  if (loading) return <p>Cargando...</p>;
-
   return (
-    <div className="p-6">
-      <h1 className="text-3xl font-bold mb-4">Gym Dashboard</h1>
+    <div className="p-4">
+      <h1 className="text-3xl font-bold mb-4">MyItems Frontend</h1>
+      <h2 className="text-2xl font-bold mb-4">Gym Members</h2>
 
-      <button
-        onClick={() => setIsModalOpen(true)}
-        className="bg-blue-500 text-white px-4 py-2 rounded mb-4"
-      >
-        <Plus className="inline h-4 w-4 mr-2" />
-        Nuevo Miembro
-      </button>
+      <div className="flex space-x-2 mb-4">
+        <button
+          onClick={() => setShowStats(!showStats)}
+          className="bg-gray-800 text-white px-4 py-2 rounded flex items-center"
+        >
+          <BarChart3 className="mr-2" size={16} />
+          {showStats ? "Ocultar Stats" : "Stats"}
+        </button>
+        <button
+          onClick={handleAddMember}
+          className="bg-black text-white px-4 py-2 rounded flex items-center"
+        >
+          <Plus className="mr-2" size={16} /> Add Member
+        </button>
+      </div>
 
-      <button
-        onClick={() => setShowStats(!showStats)}
-        className="ml-4 bg-gray-200 px-4 py-2 rounded"
-      >
-        <BarChart3 className="inline h-4 w-4 mr-2" />
-        {showStats ? "Ocultar Stats" : "Ver Stats"}
-      </button>
+      {showStats && <StatsPanel stats={stats} />}
 
-      {showStats && <StatsPanel stats={{ total: members.length }} />}
-
-      <MemberList
-        members={members}
-        onEdit={handleEditMember}
-        onDelete={handleDeleteMember}
-        onToggleStatus={handleToggleStatus}
-      />
+      {loading ? (
+        <p>Cargando miembros...</p>
+      ) : (
+        <MemberList
+          members={members}
+          onEdit={handleEditMember}
+          onDelete={deleteMember}
+          onToggleStatus={toggleMemberStatus}
+        />
+      )}
 
       <MemberModal
         isOpen={isModalOpen}
-        onClose={handleCloseModal}
+        onClose={() => setIsModalOpen(false)}
         onSave={handleSaveMember}
         member={editingMember}
-        allTags={["MMA", "Boxeo", "Crossfit"]}
       />
     </div>
   );

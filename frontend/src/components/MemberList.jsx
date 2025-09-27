@@ -1,3 +1,4 @@
+// frontend/src/components/MemberList.jsx
 function MemberList({ members, onEdit, onDelete, onToggleStatus }) {
   if (!members || members.length === 0) {
     return <p>No hay miembros que mostrar</p>;

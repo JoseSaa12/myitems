@@ -1,4 +1,5 @@
-function MemberModal({ isOpen, onClose, onSave, member, allTags }) {
+// frontend/src/components/MemberModal.jsx
+function MemberModal({ isOpen, onClose, onSave, member }) {
   if (!isOpen) return null;
 
   const handleSubmit = (e) => {
@@ -8,8 +9,8 @@ function MemberModal({ isOpen, onClose, onSave, member, allTags }) {
       name: form.get("name"),
       description: form.get("description"),
     };
-    onSave(data);
-    onClose();
+    onSave(data); // pasa al padre (GymDashboard)
+    onClose();    // cierra el modal
   };
 
   return (
@@ -25,6 +26,7 @@ function MemberModal({ isOpen, onClose, onSave, member, allTags }) {
               type="text"
               name="name"
               defaultValue={member?.name || ""}
+              required
               className="w-full border p-2 rounded"
             />
           </div>
